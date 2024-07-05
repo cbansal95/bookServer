@@ -8,7 +8,8 @@
     "start": "npm run compile && node ./dist/index.js",
     "codegen": "graphql-codegen --config codegen.ts",
     "format": "prisma format",
-    "migrate": "prisma migrate dev"
+    "migrate": "prisma migrate dev",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "keywords": [],
   "author": "",
@@ -19,10 +20,15 @@
     "@graphql-codegen/typescript": "4.0.9",
     "@graphql-codegen/typescript-resolvers": "4.2.1",
     "@types/cors": "^2.8.17",
+    "@types/jest": "^29.5.12",
     "@types/joi": "^17.2.3",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.9",
+    "esm": "^3.2.25",
+    "jest": "^29.7.0",
+    "jest-mock-extended": "^2.0.9",
     "prisma": "^5.16.1",
+    "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
   },
@@ -36,5 +42,8 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2"
   },
-  "type": "module"
+  "type": "module",
+  "transform": {
+    "^.+\\.jsx?$": "esm"
+  }
 }

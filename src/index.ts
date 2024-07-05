@@ -9,14 +9,13 @@ import { resolvers } from './resolvers.js'
 import jsonwebtoken from 'jsonwebtoken'
 import { readFileSync } from 'fs';
 import { IdecodedUser, Context } from './types.js';
-import { PrismaClient } from '@prisma/client'
+import prisma from './client.js';
 import { validateDecodedUserSchema, validateIdSchema } from './schemaValidator.js';
 import { GraphQLError } from 'graphql';
 
 const typeDefs = readFileSync('./src/schema.graphql', { encoding: 'utf-8' });
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
-const prisma = new PrismaClient();
 
 const app = express();
 
