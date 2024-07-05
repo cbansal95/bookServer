@@ -62,7 +62,6 @@ app.use(
         validateIdSchema(userId)
         } catch (error) {
           console.error('Error verifying JWT token:', error);
-          throw new GraphQLError('User not authenticated')
         }
       }
       return { req, res, prisma, userId };
