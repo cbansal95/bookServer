@@ -32,7 +32,8 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addBook?: Maybe<Book>;
+  addBook: Book;
+  addReview: Review;
   login: Message;
   register: Message;
 };
@@ -42,6 +43,13 @@ export type MutationAddBookArgs = {
   author: Scalars['String']['input'];
   publishedYear: Scalars['Int']['input'];
   title: Scalars['String']['input'];
+};
+
+
+export type MutationAddReviewArgs = {
+  bookId: Scalars['ID']['input'];
+  comment: Scalars['String']['input'];
+  rating: Scalars['Int']['input'];
 };
 
 
@@ -167,6 +175,7 @@ export type ResolversTypes = {
   Book: ResolverTypeWrapper<Book>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
+  ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Message: ResolverTypeWrapper<Message>;
   Mutation: ResolverTypeWrapper<{}>;
@@ -181,6 +190,7 @@ export type ResolversParentTypes = {
   Book: Book;
   Boolean: Scalars['Boolean']['output'];
   DateTime: Scalars['DateTime']['output'];
+  ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Message: Message;
   Mutation: {};
@@ -208,7 +218,8 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  addBook?: Resolver<Maybe<ResolversTypes['Book']>, ParentType, ContextType, RequireFields<MutationAddBookArgs, 'author' | 'publishedYear' | 'title'>>;
+  addBook?: Resolver<ResolversTypes['Book'], ParentType, ContextType, RequireFields<MutationAddBookArgs, 'author' | 'publishedYear' | 'title'>>;
+  addReview?: Resolver<ResolversTypes['Review'], ParentType, ContextType, RequireFields<MutationAddReviewArgs, 'bookId' | 'comment' | 'rating'>>;
   login?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   register?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password' | 'username'>>;
 };

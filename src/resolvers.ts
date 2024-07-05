@@ -18,7 +18,8 @@ export const resolvers = {
     Mutation: {
         login,
         register,
-        addBook
+        addBook,
+        addReview
     }
 }
 
@@ -85,4 +86,27 @@ async function addBook(_parent: unknown, args: { title: string, author: string, 
     }
     const { title, author, publishedYear } = args
     return context.prisma.book.create({ data: { title, author, publishedYear } })
+}
+
+async function addReview(_parent: unknown, args: { bookId: number, rating: number, comment: string }, context: Context) {
+    const { decodedUser } = context
+    if (!decodedUser || !decodedUser.email || !decodedUser.password) {
+        throw new Error('User not authenticated')
+    }
+
+    const user = await context.prisma.user.findUnique({ where: { "email": decodedUser.email } })
+
+    if (!user || user.password !== decodedUser.password) {
+        throw new Error('Invalid credentials')
+    }
+
+    const { comment } = args
+    const bookId = Number(args.bookId)
+    const rating = Number(args.rating)
+    const book = await context.prisma.book.findUnique({ where: { "id": bookId } })
+
+    if (!book) {
+        throw new Error('Book not found')
+    }
+    return context.prisma.review.create({ data: { bookId, userId: user.id, rating, comment } })
 }
