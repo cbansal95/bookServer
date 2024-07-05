@@ -19,7 +19,8 @@ export const resolvers = {
         login,
         register,
         addBook,
-        addReview
+        addReview,
+        updateReview
     }
 }
 
@@ -109,4 +110,27 @@ async function addReview(_parent: unknown, args: { bookId: number, rating: numbe
         throw new Error('Book not found')
     }
     return context.prisma.review.create({ data: { bookId, userId: user.id, rating, comment } })
+}
+
+async function updateReview(_parent: unknown, args: { reviewId: number, rating: number, comment: string }, context: Context) {
+    const { decodedUser } = context
+    if (!decodedUser || !decodedUser.email || !decodedUser.password) {
+        throw new Error('User not authenticated')
+    }
+
+    const user = await context.prisma.user.findUnique({ where: { "email": decodedUser.email } })
+
+    if (!user || user.password !== decodedUser.password) {
+        throw new Error('Invalid credentials')
+    }
+
+    const { comment } = args
+    const reviewId = Number(args.reviewId)
+    const rating = Number(args.rating)
+    const review = await context.prisma.review.findUnique({ where: { "id": reviewId } })
+
+    if (!review) {
+        throw new Error('Review not found')
+    }
+    return context.prisma.review.update({ where: { "id": reviewId }, data: { rating, comment } })
 }

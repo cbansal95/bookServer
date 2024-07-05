@@ -36,6 +36,7 @@ export type Mutation = {
   addReview: Review;
   login: Message;
   register: Message;
+  updateReview: Review;
 };
 
 
@@ -63,6 +64,13 @@ export type MutationRegisterArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateReviewArgs = {
+  comment: Scalars['String']['input'];
+  rating: Scalars['Int']['input'];
+  reviewId: Scalars['ID']['input'];
 };
 
 export type Query = {
@@ -222,6 +230,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   addReview?: Resolver<ResolversTypes['Review'], ParentType, ContextType, RequireFields<MutationAddReviewArgs, 'bookId' | 'comment' | 'rating'>>;
   login?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   register?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password' | 'username'>>;
+  updateReview?: Resolver<ResolversTypes['Review'], ParentType, ContextType, RequireFields<MutationUpdateReviewArgs, 'comment' | 'rating' | 'reviewId'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
