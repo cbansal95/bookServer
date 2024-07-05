@@ -34,6 +34,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   addBook: Book;
   addReview: Review;
+  deleteReview: Message;
   login: Message;
   register: Message;
   updateReview: Review;
@@ -51,6 +52,11 @@ export type MutationAddReviewArgs = {
   bookId: Scalars['ID']['input'];
   comment: Scalars['String']['input'];
   rating: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteReviewArgs = {
+  reviewId: Scalars['ID']['input'];
 };
 
 
@@ -228,6 +234,7 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addBook?: Resolver<ResolversTypes['Book'], ParentType, ContextType, RequireFields<MutationAddBookArgs, 'author' | 'publishedYear' | 'title'>>;
   addReview?: Resolver<ResolversTypes['Review'], ParentType, ContextType, RequireFields<MutationAddReviewArgs, 'bookId' | 'comment' | 'rating'>>;
+  deleteReview?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationDeleteReviewArgs, 'reviewId'>>;
   login?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   register?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password' | 'username'>>;
   updateReview?: Resolver<ResolversTypes['Review'], ParentType, ContextType, RequireFields<MutationUpdateReviewArgs, 'comment' | 'rating' | 'reviewId'>>;

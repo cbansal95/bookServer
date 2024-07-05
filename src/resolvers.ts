@@ -20,7 +20,8 @@ export const resolvers = {
         register,
         addBook,
         addReview,
-        updateReview
+        updateReview,
+        deleteReview
     }
 }
 
@@ -132,5 +133,33 @@ async function updateReview(_parent: unknown, args: { reviewId: number, rating: 
     if (!review) {
         throw new Error('Review not found')
     }
+    if(review.userId !== user.id) {
+        throw new Error('You are not authorized to update this review')
+    }
     return context.prisma.review.update({ where: { "id": reviewId }, data: { rating, comment } })
+}
+
+async function deleteReview(_parent: unknown, args: { reviewId: number }, context: Context) {
+    const { decodedUser } = context
+    if (!decodedUser || !decodedUser.email || !decodedUser.password) {
+        throw new Error('User not authenticated')
+    }
+
+    const user = await context.prisma.user.findUnique({ where: { "email": decodedUser.email } })
+
+    if (!user || user.password !== decodedUser.password) {
+        throw new Error('Invalid credentials')
+    }
+
+    const reviewId = Number(args.reviewId)
+    const review = await context.prisma.review.findUnique({ where: { "id": reviewId } })
+
+    if (!review) {
+        throw new Error('Review not found')
+    }
+    if(review.userId !== user.id) {
+        throw new Error('You are not authorized to delete this review')
+    }
+    await context.prisma.review.delete({ where: { "id": reviewId } })
+    return {"message": "Review deleted"}	
 }

@@ -38,4 +38,5 @@ type Mutation {
   addBook(title: String!, author: String!, publishedYear: Int!): Book!
   addReview(bookId: ID!, rating: Int!, comment: String!): Review!
   updateReview(reviewId: ID!, rating: Int!, comment: String!): Review!
+  deleteReview(reviewId: ID!): Message!
 }
