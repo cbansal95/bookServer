@@ -5,12 +5,18 @@
   "main": "index.js",
   "scripts": {
     "compile": "tsc",
-    "start": "npm run compile && node ./dist/index.js"
+    "start": "npm run compile && node ./dist/index.js",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/introspection": "4.0.3",
+    "@graphql-codegen/typescript": "4.0.9",
+    "@graphql-codegen/typescript-resolvers": "4.2.1",
+    "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.9",
     "prisma": "^5.16.1",
@@ -20,6 +26,8 @@
   "dependencies": {
     "@apollo/server": "^4.10.4",
     "@prisma/client": "^5.16.1",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
     "graphql-codegen": "^0.4.0",
     "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^9.0.2"

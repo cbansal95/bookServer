@@ -1,0 +1,38 @@
+scalar DateTime
+type Message {
+  message: String
+}
+type User {
+  id: Int!
+  username: String!
+  email: String!
+  password: String
+}
+
+type Book {
+  id: Int!
+  title: String!
+  author: String!
+  publishedYear: Int!
+}
+
+type Review {
+  id: Int!
+  userId: Int!
+  bookId: Int!
+  rating: Int!
+  comment: String
+  createdAt: DateTime!
+}
+
+type Query {
+  getBooks: [Book!]!
+  getBook(id: Int!): Book
+  getReviews(bookId: Int!): [Review!]!
+  getMyReviews: [Review!]
+}
+
+type Mutation {
+  login(email: String!, password: String!): Message
+  register(username: String!, email: String!, password: String!): Message!
+}

@@ -12,14 +12,24 @@ async function main() {
   // })
   // console.log(user)
 
-  const book = await prisma.book.create({
+  // const book = await prisma.book.create({
+  //   data: {
+  //     title: 'The Lord of the Rings',
+  //     author: 'J.R.R. Tolkien',
+  //     publishedYear: 1954,
+  //   },
+  // })
+  // console.log(book)
+
+  const review = await prisma.review.create({
     data: {
-      title: 'The Lord of the Rings',
-      author: 'J.R.R. Tolkien',
-      publishedYear: 1954,
+      bookId: 1,
+      userId: 1,
+      rating: 5,
+      comment: 'Great book!',
     },
   })
-  console.log(book)
+  console.log(review)
 }
 
 main()
