@@ -32,7 +32,22 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addBook?: Maybe<Book>;
+  login: Message;
   register: Message;
+};
+
+
+export type MutationAddBookArgs = {
+  author: Scalars['String']['input'];
+  publishedYear: Scalars['Int']['input'];
+  title: Scalars['String']['input'];
+};
+
+
+export type MutationLoginArgs = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 
@@ -48,7 +63,6 @@ export type Query = {
   getBooks: Array<Book>;
   getMyReviews?: Maybe<Array<Review>>;
   getReviews: Array<Review>;
-  login?: Maybe<Message>;
 };
 
 
@@ -59,12 +73,6 @@ export type QueryGetBookArgs = {
 
 export type QueryGetReviewsArgs = {
   bookId: Scalars['Int']['input'];
-};
-
-
-export type QueryLoginArgs = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
 };
 
 export type Review = {
@@ -200,6 +208,8 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addBook?: Resolver<Maybe<ResolversTypes['Book']>, ParentType, ContextType, RequireFields<MutationAddBookArgs, 'author' | 'publishedYear' | 'title'>>;
+  login?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   register?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password' | 'username'>>;
 };
 
@@ -208,7 +218,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getBooks?: Resolver<Array<ResolversTypes['Book']>, ParentType, ContextType>;
   getMyReviews?: Resolver<Maybe<Array<ResolversTypes['Review']>>, ParentType, ContextType>;
   getReviews?: Resolver<Array<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<QueryGetReviewsArgs, 'bookId'>>;
-  login?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType, RequireFields<QueryLoginArgs, 'email' | 'password'>>;
 };
 
 export type ReviewResolvers<ContextType = any, ParentType extends ResolversParentTypes['Review'] = ResolversParentTypes['Review']> = {

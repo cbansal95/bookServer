@@ -33,6 +33,7 @@ type Query {
 }
 
 type Mutation {
-  login(email: String!, password: String!): Message
+  login(email: String!, password: String!): Message!
   register(username: String!, email: String!, password: String!): Message!
+  addBook(title: String!, author: String!, publishedYear: Int!): Book
 }
