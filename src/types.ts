@@ -8,5 +8,5 @@ export type IdecodedUser = {
 
 export interface Context extends StandaloneServerContextFunctionArgument {
     prisma: PrismaClient
-    decodedUser?: IdecodedUser
+    userId?: number
   }

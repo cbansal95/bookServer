@@ -10,11 +10,13 @@ import jsonwebtoken from 'jsonwebtoken'
 import { readFileSync } from 'fs';
 import { IdecodedUser, Context } from './types.js';
 import { PrismaClient } from '@prisma/client'
-
+import { validateDecodedUserSchema, validateIdSchema } from './schemaValidator.js';
+import { GraphQLError } from 'graphql';
 
 const typeDefs = readFileSync('./src/schema.graphql', { encoding: 'utf-8' });
 
 const JWT_SECRET = 'secret';
+const prisma = new PrismaClient();
 
 const app = express();
 
@@ -42,15 +44,28 @@ app.use(
   expressMiddleware(server, {
     context: async ({ req, res }) => {
       let decodedUser: IdecodedUser | undefined;
+      let userId: number | undefined;
       if(req.headers.cookie) {
         const token = req.headers.cookie.split('=')[1]; // Assuming token is sent as a cookie
         try {
           decodedUser = jsonwebtoken.verify(token, JWT_SECRET) as IdecodedUser;
+          if (!decodedUser || !decodedUser.email || !decodedUser.password) {
+            throw new Error('User not authenticated')
+        }
+        validateDecodedUserSchema({"email": decodedUser.email, "password": decodedUser.password})
+        const user = await prisma.user.findUnique({ where: { "email": decodedUser.email } })
+    
+        if (!user || user.password !== decodedUser.password) {
+            throw new Error('Invalid credentials')
+        }
+        userId = user.id
+        validateIdSchema(userId)
         } catch (error) {
           console.error('Error verifying JWT token:', error);
+          throw new GraphQLError('User not authenticated')
         }
       }
-      return { req, res, prisma: new PrismaClient(), decodedUser };
+      return { req, res, prisma, userId };
     }
   }),
 );

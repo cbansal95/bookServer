@@ -56,18 +56,11 @@ async function login(_parent: unknown, args: { email: string, password: string }
 }
 
 async function getMyReviews(_parent: unknown, args: {  }, context: Context) {
-    //check if user is valid
-    const { decodedUser } = context
-    if (!decodedUser || !decodedUser.email || !decodedUser.password) {
+    const { userId } = context
+    if(!userId) {
         throw new Error('User not authenticated')
     }
-    validateDecodedUserSchema(decodedUser)
-    const user = await context.prisma.user.findUnique({ where: { "email": decodedUser.email } })
-
-    if (!user || user.password !== decodedUser.password) {
-        throw new Error('Invalid credentials')
-    }
-    return context.prisma.review.findMany({ where: { 'userId': user.id } })
+    return context.prisma.review.findMany({ where: { userId } })
 }
 
 async function register(_parent: unknown, args: { username: string, email: string, password: string }, context: Context) {
@@ -85,16 +78,9 @@ async function register(_parent: unknown, args: { username: string, email: strin
 }
 
 async function addBook(_parent: unknown, args: { title: string, author: string, publishedYear: number }, context: Context) {
-    //check if user is valid
-    const { decodedUser } = context
-    if (!decodedUser || !decodedUser.email || !decodedUser.password) {
+    const { userId } = context
+    if(!userId) {
         throw new Error('User not authenticated')
-    }
-    validateDecodedUserSchema(decodedUser)
-    const user = await context.prisma.user.findUnique({ where: { "email": decodedUser.email } })
-
-    if (!user || user.password !== decodedUser.password) {
-        throw new Error('Invalid credentials')
     }
     const { title, author, publishedYear } = args
     validateBookSchema(args)
@@ -102,68 +88,50 @@ async function addBook(_parent: unknown, args: { title: string, author: string, 
 }
 
 async function addReview(_parent: unknown, args: { bookId: number, rating: number, comment: string }, context: Context) {
-    const { decodedUser } = context
-    if (!decodedUser || !decodedUser.email || !decodedUser.password) {
+    const { userId } = context
+    if(!userId) {
         throw new Error('User not authenticated')
-    }
-    validateDecodedUserSchema(decodedUser)
-    const user = await context.prisma.user.findUnique({ where: { "email": decodedUser.email } })
-
-    if (!user || user.password !== decodedUser.password) {
-        throw new Error('Invalid credentials')
     }
 
     const { comment } = args
     const bookId = Number(args.bookId)
     const rating = Number(args.rating)
 
-    validateReviewSchema({ bookId, userId: user.id, rating, comment })
+    validateReviewSchema({ bookId, userId, rating, comment })
 
     const book = await context.prisma.book.findUnique({ where: { "id": bookId } })
 
     if (!book) {
         throw new Error('Book not found')
     }
-    return context.prisma.review.create({ data: { bookId, userId: user.id, rating, comment } })
+    return context.prisma.review.create({ data: { bookId, userId, rating, comment } })
 }
 
 async function updateReview(_parent: unknown, args: { reviewId: number, rating: number, comment: string }, context: Context) {
-    const { decodedUser } = context
-    if (!decodedUser || !decodedUser.email || !decodedUser.password) {
+    const { userId } = context
+    if(!userId) {
         throw new Error('User not authenticated')
-    }
-    validateDecodedUserSchema(decodedUser)
-    const user = await context.prisma.user.findUnique({ where: { "email": decodedUser.email } })
-
-    if (!user || user.password !== decodedUser.password) {
-        throw new Error('Invalid credentials')
     }
 
     const { comment } = args
     const reviewId = Number(args.reviewId)
     const rating = Number(args.rating)
-    validateReviewSchema({ reviewId, userId: user.id, rating, comment })
+    validateReviewSchema({ reviewId, userId, rating, comment })
     const review = await context.prisma.review.findUnique({ where: { "id": reviewId } })
 
     if (!review) {
         throw new Error('Review not found')
     }
-    if(review.userId !== user.id) {
+    if(review.userId !== userId) {
         throw new Error('You are not authorized to update this review')
     }
     return context.prisma.review.update({ where: { "id": reviewId }, data: { rating, comment } })
 }
 
 async function deleteReview(_parent: unknown, args: { reviewId: number }, context: Context) {
-    const { decodedUser } = context
-    if (!decodedUser || !decodedUser.email || !decodedUser.password) {
+    const { userId } = context
+    if(!userId) {
         throw new Error('User not authenticated')
-    }
-    validateDecodedUserSchema(decodedUser)
-    const user = await context.prisma.user.findUnique({ where: { "email": decodedUser.email } })
-
-    if (!user || user.password !== decodedUser.password) {
-        throw new Error('Invalid credentials')
     }
 
     const reviewId = Number(args.reviewId)
@@ -173,7 +141,7 @@ async function deleteReview(_parent: unknown, args: { reviewId: number }, contex
     if (!review) {
         throw new Error('Review not found')
     }
-    if(review.userId !== user.id) {
+    if(review.userId !== userId) {
         throw new Error('You are not authorized to delete this review')
     }
     await context.prisma.review.delete({ where: { "id": reviewId } })
