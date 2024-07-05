@@ -19,9 +19,6 @@ const JWT_SECRET = 'secret';
 const app = express();
 
 const httpServer = http.createServer(app);
-
-// Same ApolloServer initialization as before, plus the drain plugin
-// for our httpServer.
 const server = new ApolloServer<Context>({
   typeDefs,
   resolvers,
@@ -30,8 +27,6 @@ const server = new ApolloServer<Context>({
 
 await server.start();
 
-// Set up our Express middleware to handle CORS, body parsing,
-// and our expressMiddleware function.
 app.use(
   '/',
   cors<cors.CorsRequest>({
@@ -59,8 +54,6 @@ app.use(
     }
   }),
 );
-
-// Modified server startup
 await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve));
 console.log(`🚀 Server ready at http://localhost:4000/`);
 
