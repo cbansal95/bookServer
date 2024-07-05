@@ -15,7 +15,7 @@ import { GraphQLError } from 'graphql';
 
 const typeDefs = readFileSync('./src/schema.graphql', { encoding: 'utf-8' });
 
-const JWT_SECRET = 'secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 const prisma = new PrismaClient();
 
 const app = express();

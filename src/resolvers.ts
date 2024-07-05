@@ -3,7 +3,7 @@ import { Context } from './types.js'
 import { validateUserRegisterSchema, validateDecodedUserSchema, validateBookSchema, validateReviewSchema, validateIdSchema } from './schemaValidator.js'
 
 
-const JWT_SECRET = 'secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
 export const resolvers = {
     Query: {
