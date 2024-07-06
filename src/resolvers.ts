@@ -214,7 +214,7 @@ async function updateReview(_parent: unknown, args: { reviewId: number, rating: 
     const { comment } = args
     const reviewId = Number(args.reviewId)
     const rating = Number(args.rating)
-    validateReviewSchema({ reviewId, userId, rating, comment })
+    validateReviewSchema({ id: reviewId, userId, rating, comment })
     const review = await context.prisma.review.findUnique({ where: { "id": reviewId } })
 
     if (!review) {

@@ -24,7 +24,8 @@ const bookSchema = joi.object({
 });
 
 const reviewSchema = joi.object({
-    bookId: idSchema,
+    id: idSchema.optional(),
+    bookId: idSchema.optional(),
     userId: idSchema,
     rating: ratingSchema,
     comment: stringSchema
