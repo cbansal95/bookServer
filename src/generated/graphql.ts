@@ -93,8 +93,14 @@ export type QueryGetBookArgs = {
 };
 
 
+export type QueryGetBooksArgs = {
+  cursor?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryGetReviewsArgs = {
   bookId: Scalars['Int']['input'];
+  cursor?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Review = {
@@ -242,7 +248,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   getBook?: Resolver<Maybe<ResolversTypes['Book']>, ParentType, ContextType, RequireFields<QueryGetBookArgs, 'id'>>;
-  getBooks?: Resolver<Array<ResolversTypes['Book']>, ParentType, ContextType>;
+  getBooks?: Resolver<Array<ResolversTypes['Book']>, ParentType, ContextType, Partial<QueryGetBooksArgs>>;
   getMyReviews?: Resolver<Maybe<Array<ResolversTypes['Review']>>, ParentType, ContextType>;
   getReviews?: Resolver<Array<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<QueryGetReviewsArgs, 'bookId'>>;
 };

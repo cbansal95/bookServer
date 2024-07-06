@@ -1,6 +1,7 @@
 import jsonwebtoken from 'jsonwebtoken'
 import { Context } from './types.js'
 import { validateUserRegisterSchema, validateDecodedUserSchema, validateBookSchema, validateReviewSchema, validateIdSchema } from './schemaValidator.js'
+import { PrismaClientOptions } from '@prisma/client/runtime/library';
 
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
@@ -39,16 +40,26 @@ function getBook(_parent: unknown, args: { id: number }, context: Context) {
     return context.prisma.book.findUnique({ where: { 'id': id } })
 }
 
+
 /**
- * Retrieves all books from the database.
+ * Retrieves a list of books from the database based on the provided cursor.
  *
  * @param {unknown} _parent - The parent object in the GraphQL query.
- * @param {} _args - Empty object as no arguments are expected.
+ * @param {Object} args - The arguments passed to the function.
+ * @param {number} [args.cursor] - The cursor value to paginate the results.
  * @param {Context} context - The context object containing the Prisma client.
- * @return {Promise<Book[]>} A promise that resolves to an array of books.
+ * @return {Promise<Array<Book>>} A promise that resolves to an array of books.
  */
-function getBooks(_parent: unknown, _args: {}, context: Context) {
-    return context.prisma.book.findMany()
+function getBooks(_parent: unknown, args: { cursor?: number }, context: Context) {
+    const prismaQueryObj: any = {
+        orderBy: { 'id': 'asc' },
+        take: process.env.PAGE_SIZE || 3
+    }
+    if (typeof args.cursor === 'number') {
+        prismaQueryObj['cursor'] = { 'id': args.cursor }
+        prismaQueryObj['skip'] = 1
+    }
+    return context.prisma.book.findMany(prismaQueryObj)
 }
 
 /**
@@ -57,13 +68,23 @@ function getBooks(_parent: unknown, _args: {}, context: Context) {
  * @param {unknown} _parent - The parent object in the GraphQL query.
  * @param {Object} args - The arguments passed to the function.
  * @param {number} args.bookId - The ID of the book to retrieve reviews for.
+ * @param {number} [args.cursor] - The cursor value to paginate the results.
  * @param {Context} context - The context object containing the Prisma client.
  * @return {Promise<Review[]>} A promise that resolves to an array of reviews for the specified book.
  */
-function getReviews(_parent: unknown, args: { bookId: number }, context: Context) {
+function getReviews(_parent: unknown, args: { bookId: number, cursor?: number }, context: Context) {
     const bookId = Number(args.bookId)
     validateIdSchema(bookId)
-    return context.prisma.review.findMany({ where: { 'bookId': bookId } })
+    const prismaQueryObj: any = {
+        where: { 'bookId': bookId },
+        orderBy: { 'id': 'asc' },
+        take: process.env.PAGE_SIZE || 3
+    }
+    if (typeof args.cursor === 'number') {
+        prismaQueryObj['cursor'] = { 'id': args.cursor }
+        prismaQueryObj['skip'] = 1
+    }
+    return context.prisma.review.findMany(prismaQueryObj)
 }
 
 /**

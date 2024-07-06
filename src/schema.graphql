@@ -26,9 +26,9 @@ type Review {
 }
 
 type Query {
-  getBooks: [Book!]!
+  getBooks(cursor: Int): [Book!]!
   getBook(id: Int!): Book
-  getReviews(bookId: Int!): [Review!]!
+  getReviews(bookId: Int!, cursor: Int): [Review!]!
   getMyReviews: [Review!]
 }
 
