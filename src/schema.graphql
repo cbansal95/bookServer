@@ -6,7 +6,7 @@ type User {
   id: Int!
   username: String!
   email: String!
-  password: String
+  password: String!
 }
 
 type Book {
@@ -21,7 +21,7 @@ type Review {
   userId: Int!
   bookId: Int!
   rating: Int!
-  comment: String
+  comment: String!
   createdAt: DateTime!
 }
 

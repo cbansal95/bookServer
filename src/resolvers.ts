@@ -265,13 +265,10 @@ async function deleteReview(_parent: unknown, args: { reviewId: number }, contex
 
     const reviewId = Number(args.reviewId)
     validateIdSchema(reviewId)
-    const review = await context.prisma.review.findUnique({ where: { "id": reviewId } })
+    const review = await context.prisma.review.findUnique({ where: { "id": reviewId, "userId": userId } })
 
     if (!review) {
         throw new Error('Review not found')
-    }
-    if(review.userId !== userId) {
-        throw new Error('You are not authorized to delete this review')
     }
     await context.prisma.review.delete({ where: { "id": reviewId } })
     return {"message": "Review deleted"}	
