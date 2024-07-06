@@ -9,7 +9,8 @@
     "codegen": "graphql-codegen --config codegen.ts",
     "format": "prisma format",
     "migrate": "prisma migrate dev",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "seed": "node seed.js"
   },
   "keywords": [],
   "author": "",

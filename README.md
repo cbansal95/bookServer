@@ -16,6 +16,10 @@ Create the necessary tables in the database using:
 
 `npm run migrate`
 
+Optional: Seed test data into the database using
+
+`npm run seed`
+
 ### 4. Generating GraphQL code
 Generate the necessary GraphQL types and bindings using:
 `npm run codegen`
