@@ -13,7 +13,13 @@ const config: Config = {
   coverageProvider: "v8",
   preset: 'ts-jest',
   testEnvironment: 'node',
-  setupFilesAfterEnv: ['<rootDir>/src/singleton.ts'],
+  //setupFilesAfterEnv: ['<rootDir>/src/singleton.ts'],
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
+  },
+  testMatch: [
+             "**/?(*.)+(spec|test).[j]s?(x)"
+         ]
 };
 
 export default config;
