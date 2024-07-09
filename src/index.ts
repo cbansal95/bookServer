@@ -5,13 +5,11 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import { resolvers } from './resolvers.js'
-//import { typeDefs } from './schema.js'
 import jsonwebtoken from 'jsonwebtoken'
 import { readFileSync } from 'fs';
 import { IdecodedUser, Context } from './types.js';
 import prisma from './client.js';
 import { validateDecodedUserSchema, validateIdSchema } from './schemaValidator.js';
-import { GraphQLError } from 'graphql';
 
 const typeDefs = readFileSync('./src/schema.graphql', { encoding: 'utf-8' });
 
@@ -44,6 +42,8 @@ app.use(
     context: async ({ req, res }) => {
       let decodedUser: IdecodedUser | undefined;
       let userId: number | undefined;
+      // cookie validation logic
+      // if a cookie is present it's validated, but if it's not present, the user can still access the read only APIs
       if(req.headers.cookie) {
         const token = req.headers.cookie.split('=')[1]; // Assuming token is sent as a cookie
         try {
@@ -54,12 +54,14 @@ app.use(
         validateDecodedUserSchema({"email": decodedUser.email, "password": decodedUser.password})
         const user = await prisma.user.findUnique({ where: { "email": decodedUser.email } })
     
+        // This would look different in production as passwords won't be stored in plaintext
         if (!user || user.password !== decodedUser.password) {
             throw new Error('Invalid credentials')
         }
         userId = user.id
         validateIdSchema(userId)
         } catch (error) {
+          // Instead of throwing an error here, we let the user signin again to set a working token
           console.error('Error verifying JWT token:', error);
         }
       }
@@ -69,31 +71,3 @@ app.use(
 );
 await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve));
 console.log(`🚀 Server ready at http://localhost:4000/`);
-
-// const server = new ApolloServer<Context>({
-//     typeDefs,
-//     resolvers,
-//   });
-
-//   const { url } = await startStandaloneServer(server, {
-//     // context: createContext,
-//     context: async ({ req, res }) => {
-//       let decodedUser: IdecodedUser | undefined;
-//       const prisma = new PrismaClient();
-
-//       console.log(req.headers)
-//       if (req.headers.cookie) {
-//           const token = req.headers.cookie; // Assuming token is sent as a cookie
-//           try {
-//             console.log(token)
-//               decodedUser = jsonwebtoken.verify(token, JWT_SECRET) as IdecodedUser;
-//           } catch (error) {
-//               console.error('Error verifying JWT token:', error);
-//           }
-//       }
-//       console.log(decodedUser)
-//       return { req, res, prisma, decodedUser };
-//   },
-//     listen: { port: 4000 },
-//   });
-  

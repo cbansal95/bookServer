@@ -153,6 +153,8 @@ async function register(_parent: unknown, args: { username: string, email: strin
         throw new Error('User already exists')
     }
 
+    // User credentials are currently stored in the backend in plaintext to make the assignment easier to debug
+    // In a real world scenario, the password would be hashed and stored securely
     await context.prisma.user.create({ data: { username, email, password } })
     return {"message": "User created"}	
 }

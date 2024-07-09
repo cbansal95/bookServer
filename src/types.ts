@@ -6,6 +6,7 @@ export type IdecodedUser = {
     password: string
 }
 
+// Extending the Prisma context to include relevant functions and state for resolvers
 export interface Context extends StandaloneServerContextFunctionArgument {
     prisma: PrismaClient
     userId?: number
