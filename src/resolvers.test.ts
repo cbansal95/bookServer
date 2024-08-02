@@ -4,7 +4,6 @@ import { resolvers } from './resolvers.js';
 import * as express from 'express';
 import { prismaMock } from './singleton.js';
 import { jest } from '@jest/globals';
-import { isContext } from 'vm';
 
 
 // Mock the context object for testing purposes
